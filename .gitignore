@@ -1,6 +1,11 @@
 # Personal study plan (Portuguese, not part of the public repo)
 PLANO-SPRINTS.md
 
+# Python
+__pycache__/
+*.pyc
+.venv/
+
 # OS / editors
 .DS_Store
 Thumbs.db
