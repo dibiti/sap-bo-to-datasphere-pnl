@@ -1,0 +1,9 @@
+cost_center,cost_center_name,company_code,profit_center
+CH01-PROD,Chocolate production,CH01,PC-CHOCOLATE
+CH01-SALES,Sales Switzerland,CH01,PC-CHOCOLATE
+CH01-MKT,Marketing Switzerland,CH01,PC-CHOCOLATE
+CH01-ADMIN,Administration Switzerland,CH01,PC-CORPORATE
+PT01-PROD,Coffee roasting,PT01,PC-COFFEE
+PT01-SALES,Sales Portugal,PT01,PC-COFFEE
+PT01-RETAIL,Retail cafés,PT01,PC-RETAIL
+PT01-ADMIN,Administration Portugal,PT01,PC-CORPORATE

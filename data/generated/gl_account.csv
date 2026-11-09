@@ -1,0 +1,16 @@
+gl_account,account_name,account_type
+11001000,Bank,Balance sheet
+12100000,Trade receivables,Balance sheet
+21100000,Trade payables,Balance sheet
+41000000,Revenue - Chocolate,P&L
+41100000,Revenue - Coffee,P&L
+41200000,Revenue - Retail,P&L
+51000000,Raw materials - Cocoa,P&L
+51100000,Raw materials - Coffee beans,P&L
+51200000,Packaging,P&L
+51300000,Production overhead,P&L
+61000000,Salaries,P&L
+62000000,Rent,P&L
+63000000,Marketing,P&L
+64000000,Freight & logistics,P&L
+65000000,Travel expenses,P&L
