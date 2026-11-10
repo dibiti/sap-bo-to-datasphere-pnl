@@ -1,0 +1,18 @@
+node_id,parent_node_id,node_name,sort_order
+EBIT,,EBIT,1
+GROSS_MARGIN,EBIT,Gross margin,1
+REVENUE,GROSS_MARGIN,Revenue,1
+COGS,GROSS_MARGIN,Cost of goods sold,2
+OPEX,EBIT,Operating expenses,2
+41000000,REVENUE,Revenue - Chocolate,1
+41100000,REVENUE,Revenue - Coffee,2
+41200000,REVENUE,Revenue - Retail,3
+51000000,COGS,Raw materials - Cocoa,1
+51100000,COGS,Raw materials - Coffee beans,2
+51200000,COGS,Packaging,3
+51300000,COGS,Production overhead,4
+61000000,OPEX,Salaries,1
+62000000,OPEX,Rent,2
+63000000,OPEX,Marketing,3
+64000000,OPEX,Freight & logistics,4
+65000000,OPEX,Travel expenses,5

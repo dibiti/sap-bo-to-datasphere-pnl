@@ -64,6 +64,46 @@ def build_cost_center() -> pd.DataFrame:
     return pd.DataFrame(rows, columns=["cost_center", "cost_center_name", "company_code", "profit_center"])
 
 
+def parent_of_account(gl_account: str) -> str:
+    if gl_account.startswith("41"):
+        return "REVENUE"
+    elif gl_account.startswith("51"):
+        return "COGS"
+    else:
+        return "OPEX"
+
+
+def build_pl_hierarchy() -> pd.DataFrame:
+    """Parent-child P&L structure: 5 structure nodes + 12 P&L accounts (leaves)."""
+    columns = ["node_id", "parent_node_id", "node_name", "sort_order"]
+
+    # Step 1: structure nodes, written by hand
+    structure = pd.DataFrame(
+        [
+            ("EBIT", None, "EBIT", 1),
+            ("GROSS_MARGIN", "EBIT", "Gross margin", 1),
+            ("REVENUE", "GROSS_MARGIN", "Revenue", 1),
+            ("COGS", "GROSS_MARGIN", "Cost of goods sold", 2),
+            ("OPEX", "EBIT", "Operating expenses", 2)
+        ],
+        columns=columns,
+    )
+
+    # Step 2: account leaves, derived from the gl_account table
+    accounts = build_gl_account()
+    pl_accounts = accounts[accounts["account_type"] == "P&L"]  # WHERE
+    leaves = pd.DataFrame({
+        "node_id": pl_accounts["gl_account"],
+        "parent_node_id": pl_accounts["gl_account"].map(parent_of_account),  # CASE WHEN
+        "node_name": pl_accounts["account_name"],
+    })
+    # ROW_NUMBER() OVER (PARTITION BY parent_node_id)
+    leaves["sort_order"] = leaves.groupby("parent_node_id").cumcount() + 1
+
+    # Step 3: UNION ALL
+    return pd.concat([structure, leaves], ignore_index=True)
+
+
 def main() -> None:
     OUTPUT_DIR.mkdir(exist_ok=True)
 
@@ -72,6 +112,7 @@ def main() -> None:
         "company": build_company,
         "gl_account": build_gl_account,
         "cost_center": build_cost_center,
+        "pl_hierarchy": build_pl_hierarchy,
     }
 
     for table_name, build in builders.items():
