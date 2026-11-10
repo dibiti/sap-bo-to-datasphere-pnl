@@ -1,13 +1,17 @@
-"""Generate the master data (dimension) tables for Lusalpina Group as CSV files.
+"""Generate the master data (dimension) tables and exchange rates for Lusalpina Group as CSV files.
 
 Table definitions: see data/README.md.
 """
 
+import random
 from pathlib import Path
 
 import pandas as pd
 
 OUTPUT_DIR = Path(__file__).parent / "generated"
+
+RANDOM_SEED = 42
+BUDGET_RATE_EUR_CHF = 0.94
 
 
 def build_profit_center() -> pd.DataFrame:
@@ -104,6 +108,27 @@ def build_pl_hierarchy() -> pd.DataFrame:
     return pd.concat([structure, leaves], ignore_index=True)
 
 
+def build_exchange_rate() -> pd.DataFrame:
+    """EUR -> CHF rates: monthly averages for actuals (type M), one fixed planning rate for the budget (type P)."""
+    random.seed(RANDOM_SEED)  # same "random" rates on every run
+    rows = []
+
+    # Actuals: one rate per month in 2024 and 2025 (like a CROSS JOIN of years x months)
+    for fiscal_year in [2024, 2025]:
+        for posting_period in range(1, 13):
+            rate = round(random.uniform(0.93, 0.97), 5)
+            rows.append(("M", "EUR", "CHF", fiscal_year, posting_period, rate))
+
+    # Budget: 2025 only, one fixed planning rate
+    for posting_period in range(1, 13):
+        rows.append(("P", "EUR", "CHF", 2025, posting_period, BUDGET_RATE_EUR_CHF))
+
+    return pd.DataFrame(
+        rows,
+        columns=["rate_type", "from_currency", "to_currency", "fiscal_year", "posting_period", "rate"],
+    )
+
+
 def main() -> None:
     OUTPUT_DIR.mkdir(exist_ok=True)
 
@@ -113,6 +138,7 @@ def main() -> None:
         "gl_account": build_gl_account,
         "cost_center": build_cost_center,
         "pl_hierarchy": build_pl_hierarchy,
+        "exchange_rate": build_exchange_rate,
     }
 
     for table_name, build in builders.items():
